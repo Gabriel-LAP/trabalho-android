@@ -1,47 +1,57 @@
+// Importa bibliotecas e componentes necessários do React e React Native
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity, Modal, TextInput, ScrollView } from 'react-native';
-import { useUsers } from '@/hooks/useUser';
-import { Link, router } from 'expo-router';
-import { User } from '@/types/UserType';
+import { useUsers } from '@/hooks/useUser'; // Hook personalizado para gerenciar usuários
+import { Link, router } from 'expo-router'; // Biblioteca para navegação
+import { User } from '@/types/UserType'; // Tipo de dados do usuário
 
-export default function RegisteredClients() {
+// Componente principal que exibe os funcionários registrados
+export default function RegisteredEmployees() {
+  // Desestruturação do hook useUsers para obter funções e dados relacionados aos usuários
   const { handleUsers, users, handleUpdateUser, handleDeleteUser } = useUsers();
 
+  // Estado para controlar a visibilidade do modal
   const [modalVisible, setModalVisible] = useState(false);
+  // Estado para armazenar o usuário selecionado para edição
   const [userSelected, setUserSelected] = useState<User>();
-
+  // Estado para controlar o carregamento durante a atualização do usuário
   const [loading, setLoading] = useState(false);
 
+  // Efeito colateral que busca os usuários quando o componente é montado
   useEffect(() => {
-    handleUsers()
+    handleUsers();
   }, []);
 
+  // Função para navegar para a tela de cadastro de novo funcionário
   const handleAddUser = () => {
     router.navigate({
       pathname: '/(tabbs)/dashboardAdm/RegisterEmployee',
     });
   };
 
+  // Função para lidar com a edição de um usuário
   const handleEditUser = (user: User) => {
-    setUserSelected(user);
-    console.log(userSelected);
-    setModalVisible(true);
+    setUserSelected(user); // Define o usuário selecionado
+    console.log(userSelected); // Log do usuário selecionado
+    setModalVisible(true); // Abre o modal de edição
   };
 
-  const handleSaveUser = async(user: User) => {
-    setLoading(true);
-    await handleUpdateUser(user);
-    handleUsers();
-    setLoading(false);
-    setModalVisible(false);
+  // Função assíncrona para salvar as alterações do usuário
+  const handleSaveUser = async (user: User) => {
+    setLoading(true); // Inicia o carregamento
+    await handleUpdateUser(user); // Atualiza o usuário
+    handleUsers(); // Recarrega a lista de usuários
+    setLoading(false); // Finaliza o carregamento
+    setModalVisible(false); // Fecha o modal
   };
 
+  // Renderiza o componente
   return (
     <View style={styles.container}>
       <FlatList
-        data={users.slice().reverse()}
-        keyExtractor={(item) => String(item._id)}
-        renderItem={({ item }) => (
+        data={users.slice().reverse()} // Inverte a lista de usuários
+        keyExtractor={(item) => String(item._id)} // Define a chave única para cada item
+        renderItem={({ item }) => ( // Renderiza cada item da lista
           <View style={styles.service}>
             <Text style={styles.label}>Nome:</Text>
             <Text style={styles.name}>{item.name}</Text>
@@ -76,24 +86,22 @@ export default function RegisteredClients() {
               <TouchableOpacity style={styles.editButton} onPress={() => handleEditUser(item)}>
                 <Text style={styles.editButtonText}>Editar</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteButton} onPress={() => {handleDeleteUser(item), handleUsers()}}>
+              <TouchableOpacity style={styles.deleteButton} onPress={() => { handleDeleteUser(item), handleUsers() }}>
                 <Text style={styles.deleteButtonText}>Excluir</Text>
               </TouchableOpacity>
             </View>
-            
           </View>
-          
         )}
       />
       <TouchableOpacity style={styles.addButton} onPress={handleAddUser}>
         <Text style={styles.addButtonText}>Cadastrar Funcionário</Text>
       </TouchableOpacity>
       <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
+        animationType="fade" // Tipo de animação do modal
+        transparent={true} // Modal transparente
+        visible={modalVisible} // Controla a visibilidade do modal
         onRequestClose={() => {
-          setModalVisible(false);
+          setModalVisible(false); // Fecha o modal ao solicitar
         }}
       >
         <View style={styles.centeredView}>
@@ -103,82 +111,81 @@ export default function RegisteredClients() {
             <TextInput
               style={styles.input}
               placeholder="Nome"
-              value={userSelected?.name}
-              onChangeText={(text) => setUserSelected({ ...userSelected!, name: text })}
+              value={userSelected?.name} // Valor do campo de nome
+              onChangeText={(text) => setUserSelected({ ...userSelected!, name: text })} // Atualiza o nome do usuário
             />
             <Text style={styles.labelModal}>Email:</Text>
             <TextInput
               style={styles.input}
               placeholder="Email"
-              value={userSelected?.email}
-              onChangeText={(text) => setUserSelected({ ...userSelected!, email: text })}
+              value={userSelected?.email} // Valor do campo de email
+              onChangeText={(text) => setUserSelected({ ...userSelected!, email: text })} // Atualiza o email do usuário
             />
             <Text style={styles.labelModal}>Telefone:</Text>
             <TextInput
               style={styles.input}
               placeholder="Telefone"
-              value={userSelected?.phone ? userSelected!.phone.toString() : ''}
-              onChangeText={(text) => setUserSelected({ ...userSelected!, phone: parseInt(text) })}
+              value={userSelected?.phone ? userSelected!.phone.toString() : ''} // Valor do campo de telefone
+              onChangeText={(text) => setUserSelected({ ...userSelected!, phone: parseInt(text) })} // Atualiza o telefone do usuário
             />
             <Text style={styles.labelModal}>CPF:</Text>
             <TextInput
               style={styles.input}
               placeholder="CPF"
-              value={userSelected?.cpf}
-              onChangeText={(text) => setUserSelected({ ...userSelected!, cpf: text })}
+              value={userSelected?.cpf} // Valor do campo de CPF
+              onChangeText={(text) => setUserSelected({ ...userSelected!, cpf: text })} // Atualiza o CPF do usuário
             />
             <Text style={styles.labelModal}>Endereço:</Text>
             <TextInput
               style={styles.input}
               placeholder="Endereço"
-              value={userSelected?.address}
-              onChangeText={(text) => setUserSelected({ ...userSelected!, address: text })}
+              value={userSelected?.address} // Valor do campo de endereço
+              onChangeText={(text) => setUserSelected({ ...userSelected!, address: text })} // Atualiza o endereço do usuário
             />
             <Text style={styles.labelModal}>Número:</Text>
             <TextInput
               style={styles.input}
               placeholder="Número"
-              value={userSelected?.number ? userSelected!.number.toString() : ''}
-              onChangeText={(text) => setUserSelected({ ...userSelected!, number: parseInt(text) })}
+              value={userSelected?.number ? userSelected!.number.toString() : ''} // Valor do campo de número
+              onChangeText={(text) => setUserSelected({ ...userSelected!, number: parseInt(text) })} // Atualiza o número do usuário
             />
             <Text style={styles.labelModal}>CEP:</Text>
             <TextInput
               style={styles.input}
               placeholder="CEP"
-              value={userSelected?.zipCode ? userSelected!.zipCode.toString() : ''}
-              onChangeText={(text) => setUserSelected({ ...userSelected!, zipCode: parseInt(text) })}
+              value={userSelected?.zipCode ? userSelected!.zipCode.toString() : ''} // Valor do campo de CEP
+              onChangeText={(text) => setUserSelected({ ...userSelected!, zipCode: parseInt(text) })} // Atualiza o CEP do usuário
             />
             <Text style={styles.labelModal}>Cidade:</Text>
             <TextInput
               style={styles.input}
               placeholder="Cidade"
-              value={userSelected?.city}
-              onChangeText={(text) => setUserSelected({ ...userSelected!, city: text })}
+              value={userSelected?.city} // Valor do campo de cidade
+              onChangeText={(text) => setUserSelected({ ...userSelected!, city: text })} // Atualiza a cidade do usuário
             />
             <Text style={styles.labelModal}>Estado:</Text>
             <TextInput
               style={styles.input}
               placeholder="Estado"
-              value={userSelected?.state}
-              onChangeText={(text) => setUserSelected({ ...userSelected!, state: text })}
+              value={userSelected?.state} // Valor do campo de estado
+              onChangeText={(text) => setUserSelected({ ...userSelected!, state: text })} // Atualiza o estado do usuário
             />
             <Text style={styles.labelModal}>Tipo:</Text>
             <TextInput
               style={styles.input}
               placeholder="Tipo"
-              value={userSelected?.type}
-              onChangeText={(text) => setUserSelected({ ...userSelected!, type: text })}
+              value={userSelected?.type} // Valor do campo de tipo
+              onChangeText={(text) => setUserSelected({ ...userSelected!, type: text })} // Atualiza o tipo do usuário
             />
             <TouchableOpacity
               style={styles.button}
-              onPress={() => handleSaveUser(userSelected!)}
+              onPress={() => handleSaveUser(userSelected!)} // Salva o usuário ao pressionar o botão
             >
-            {loading ? (
+              {loading ? ( // Exibe um indicador de carregamento se estiver carregando
                 <ActivityIndicator size="small" color="#fff" />
-            ) : (
-                <Text style={styles.textStyle}>Salvar</Text>
-            )}
-              
+              ) : (
+                <Text style={styles.textStyle}>Salvar</Text> // Texto do botão
+              )}
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -187,6 +194,7 @@ export default function RegisteredClients() {
   );
 }
 
+// Estilos do componente
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -351,7 +359,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,
-    // alignItems: 'flex-start',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -386,4 +393,3 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
-
