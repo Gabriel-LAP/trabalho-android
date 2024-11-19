@@ -1,86 +1,84 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useLogout } from '@/hooks/useLogout';
-import { Client } from '@/types/ClientType';
+import React, { useEffect, useState } from 'react'; // Importa React e hooks useEffect e useState
+import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native'; // Importa componentes do React Native
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Importa AsyncStorage para armazenamento local
+import FontAwesome from '@expo/vector-icons/FontAwesome'; // Importa ícones do FontAwesome
+import { useLogout } from '@/hooks/useLogout'; // Importa hook personalizado para logout
+import { Client } from '@/types/ClientType'; // Importa tipo Client
 
-export default function Profile() {
+export default function Profile() { // Define o componente Profile
 
-  const [client, setClient] = useState<Client | null>(null);
+  const [client, setClient] = useState<Client | null>(null); // Estado para armazenar informações do cliente
 
-  useEffect(() => {
-    const getClientFromStorage = async () => {
-      const clientString = await AsyncStorage.getItem('user');
-      if (clientString) {
-        const Client = JSON.parse(clientString) as Client;
-        setClient(Client);
+  useEffect(() => { // Hook para executar código após a renderização
+    const getClientFromStorage = async () => { // Função assíncrona para obter dados do cliente
+      const clientString = await AsyncStorage.getItem('user'); // Obtém a string do cliente do AsyncStorage
+      if (clientString) { // Verifica se a string existe
+        const Client = JSON.parse(clientString) as Client; // Converte a string em objeto Client
+        setClient(Client); // Atualiza o estado com os dados do cliente
       }
     };
 
-    getClientFromStorage();
-  }, []);
+    getClientFromStorage(); // Chama a função para obter os dados do cliente
+  }, []); // Executa apenas uma vez após a montagem do componente
 
-  return client && (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <FontAwesome name="user-circle" size={60} color="white" style={styles.icon} />
-        <Text style={styles.name}>{client.name}</Text>
+  return client && ( // Renderiza o componente apenas se client não for nulo
+    <View style={styles.container}> // Contêiner principal
+      <View style={styles.header}> // Cabeçalho do perfil
+        <FontAwesome name="user-circle" size={60} color="white" style={styles.icon} /> // Ícone do usuário
+        <Text style={styles.name}>{client.name}</Text> // Nome do cliente
       </View>
-      <ScrollView style={styles.body}>
-        <Text style={styles.field}>E-mail: {client.email}</Text>
-        <View style={styles.separator} />
-        <Text style={styles.field}>Telefone: {client.phone}</Text>
+      <ScrollView style={styles.body}> // ScrollView para permitir rolagem
+        <Text style={styles.field}>E-mail: {client.email}</Text> // Exibe o e-mail do cliente
+        <View style={styles.separator} /> // Separador visual
+        <Text style={styles.field}>Telefone: {client.phone}</Text> // Exibe o telefone do cliente
       </ScrollView>
-      <Pressable onPress={useLogout} style={styles.logout}>
-        <Text style={styles.logoutText}>Sair</Text>
+      <Pressable onPress={useLogout} style={styles.logout}> // Botão para logout
+        <Text style={styles.logoutText}>Sair</Text> // Texto do botão de logout
       </Pressable>
     </View>
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
+const styles = StyleSheet.create({ // Define os estilos do componente
+  container: { // Estilo do contêiner principal
     flex: 1,
   },
-  header: {
-    height: '30%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#333',
-    marginBottom: 20,
+  header: { // Estilo do cabeçalho
+    height: '30%', // Altura do cabeçalho
+    justifyContent: 'center', // Centraliza verticalmente
+    alignItems: 'center', // Centraliza horizontalmente
+    backgroundColor: '#333', // Cor de fundo do cabeçalho
+    marginBottom: 20, // Margem inferior
   },
-  icon: {
-    marginBottom: 20,
+  icon: { // Estilo do ícone
+    marginBottom: 20, // Margem inferior do ícone
   },
-  name: {
-    fontSize: 24,
-    color: 'white',
-    marginBottom: 6,
+  name: { // Estilo do nome do cliente
+    fontSize: 24, // Tamanho da fonte
+    color: 'white', // Cor do texto
+    marginBottom: 6, // Margem inferior
   },
-  body: {
-    flex: 1,
-    paddingHorizontal: 20,
+  body: { // Estilo do corpo do perfil
+    flex: 1, // Permite que o corpo ocupe o espaço restante
+    paddingHorizontal: 20, // Preenchimento horizontal
   },
-  field: {
-    fontSize: 16,
-    marginBottom: 10,
+  field: { // Estilo dos campos de texto
+    fontSize: 16, // Tamanho da fonte
+    marginBottom: 10, // Margem inferior
   },
-  separator: {
-    height: 1,
-    backgroundColor: '#ccc',
-    marginBottom: 10,
+  separator: { // Estilo do separador
+    height: 1, // Altura do separador
+    backgroundColor: '#ccc', // Cor do separador
+    marginBottom: 10, // Margem inferior
   },
-  logout: {
-    backgroundColor: '#333',
-    padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center'
+  logout: { // Estilo do botão de logout
+    backgroundColor: '#333', // Cor de fundo do botão
+    padding: 10, // Preenchimento interno
+    alignItems: 'center', // Centraliza horizontalmente
+    justifyContent: 'center' // Centraliza verticalmente
   },
-  logoutText: {
-    fontSize: 16,
-    color: 'white',
+  logoutText: { // Estilo do texto do botão de logout
+    fontSize: 16, // Tamanho da fonte
+    color: 'white', // Cor do texto
   },
 });
-
-
